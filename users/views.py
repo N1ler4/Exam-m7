@@ -1,12 +1,10 @@
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import AllowAny , IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import CustomUser
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import PasswordResetConfirmSerializer, RegisterSerializer, ChangePasswordSerializer , PasswordResetRequestSerializer
-from rest_framework.response import Response
-from rest_framework import status
+from .serializers import PasswordResetConfirmSerializer, RegisterSerializer, ChangePasswordSerializer, PasswordResetRequestSerializer
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -23,7 +21,7 @@ class ChangePasswordView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
-        return self.request.user  # Получаем текущего пользователя
+        return self.request.user
 
     def update(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -41,7 +39,7 @@ class ChangePasswordView(generics.UpdateAPIView):
 
 class PasswordResetRequestView(generics.GenericAPIView):
     serializer_class = PasswordResetRequestSerializer
-    permission_classes = [permissions.AllowAny]  # Любой пользователь может запросить сброс
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
@@ -63,11 +61,11 @@ class PasswordResetRequestView(generics.GenericAPIView):
             return Response({"message": "Email sent"}, status=status.HTTP_200_OK)
         except CustomUser.DoesNotExist:
             return Response({"error": "User with this email not found"}, status=status.HTTP_404_NOT_FOUND)
-        
-        
+
+
 class PasswordResetConfirmView(generics.GenericAPIView):
     serializer_class = PasswordResetConfirmSerializer
-    permission_classes = [permissions.AllowAny] 
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request, pk, token):
         serializer = self.get_serializer(data=request.data)
@@ -91,20 +89,20 @@ class ShowProfileView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return self.request.user  
+        return self.request.user
 
     def get(self, request, *args, **kwargs):
         user = self.get_object()
         serializer = self.get_serializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    
+
+
 class UpdateUserProfileView(generics.UpdateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return self.request.user  
+        return self.request.user
 
     def put(self, request, *args, **kwargs):
         user = self.get_object()

@@ -1,16 +1,11 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from drf_yasg.utils import swagger_auto_schema
-
-
-from rest_framework import serializers
-from .models import CustomUser  # используем нашу модель
+from .models import CustomUser
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
     confirm_password = serializers.CharField(write_only=True, min_length=8)
-    
 
     class Meta:
         model = CustomUser
@@ -33,19 +28,22 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
     confirm_password = serializers.CharField(required=True)
-    
+
     def validate(self, data):
         if data['new_password'] != data['confirm_password']:
             raise serializers.ValidationError("Пароли не совпадают.")
         return data
-    
+
+
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
-    
+
+
 class PasswordResetConfirmSerializer(serializers.Serializer):
     new_password = serializers.CharField(write_only=True, min_length=8)
     confirm_password = serializers.CharField(write_only=True, min_length=8)
@@ -56,17 +54,23 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         return data
 
 
-
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'birthday', 'organization', 'scentific_degree', 'another_info', 'image']
+        fields = [
+            'id', 'username', 'first_name', 'last_name', 'email',
+            'birthday', 'organization', 'scentific_degree',
+            'another_info', 'image'
+        ]
 
 
 class UpdateUserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'birthday', 'organization', 'scentific_degree', 'another_info', 'image']
+        fields = [
+            'username', 'first_name', 'last_name', 'email', 'birthday',
+            'organization', 'scentific_degree', 'another_info', 'image'
+        ]
 
     def update(self, instance, validated_data):
         instance.username = validated_data.get('username', instance.username)

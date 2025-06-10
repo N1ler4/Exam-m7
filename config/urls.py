@@ -12,7 +12,7 @@ from rest_framework import permissions
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('tuit/', include('tuit.urls')),
+    path('project/', include('tuit.urls')),
     path('user/', include('users.urls')),
 ]
 

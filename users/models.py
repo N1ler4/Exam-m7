@@ -6,5 +6,5 @@ class CustomUser(AbstractUser):
     organization = models.CharField(max_length=255, blank=True)
     scentific_degree = models.CharField(max_length=255, blank=True)
     another_info = models.TextField(blank=True)
-    image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+    image = models.ImageField(upload_to='image/', null=True, blank=True)
 

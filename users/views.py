@@ -9,12 +9,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
-
+from rest_framework.parsers import MultiPartParser, FormParser
 
 class RegisterView(CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
+    parser_classes = [MultiPartParser, FormParser]
+
 
 class ChangePasswordView(generics.UpdateAPIView):
     serializer_class = ChangePasswordSerializer
@@ -62,9 +64,10 @@ class PasswordResetRequestView(generics.GenericAPIView):
         except CustomUser.DoesNotExist:
             return Response({"error": "User with this email not found"}, status=status.HTTP_404_NOT_FOUND)
         
+        
 class PasswordResetConfirmView(generics.GenericAPIView):
     serializer_class = PasswordResetConfirmSerializer
-    permission_classes = [permissions.AllowAny]  # Любой пользователь может сбросить пароль
+    permission_classes = [permissions.AllowAny] 
 
     def post(self, request, pk, token):
         serializer = self.get_serializer(data=request.data)
@@ -81,6 +84,7 @@ class PasswordResetConfirmView(generics.GenericAPIView):
 
         except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 class ShowProfileView(generics.RetrieveAPIView):
     serializer_class = RegisterSerializer
